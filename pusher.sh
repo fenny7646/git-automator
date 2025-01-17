@@ -16,28 +16,28 @@ if [ ! -f "$COUNTER_FILE" ]; then
 fi
 
 changer() {
+    local f=$1
+    local s=$2
+    local r=$3
+
     # Run Git commands (example)
     echo "Staging changes..."
     if ! git add .; then
         echo "Error: Failed to stage changes."
         exit 1
     fi
-    echo "-----------------------------------------------------------"
-    echo "git commit -m $1"
-    echo "git push -u $2 $3"
-    echo "-----------------------------------------------------------"
     echo "Committing changes..."
-    if ! git commit -m "$1"; then
+    if ! git commit -m "$f"; then
         echo "Error: Failed to commit changes. Make sure there are changes to commit."
         exit 1
     fi
 
-    echo "Pushing changes to $2..."
-    if ! git push -u "$2" "$3"; then
-        echo "Error: Failed to push changes to $2."
+    echo "Pushing changes to $s..."
+    if ! git push -u "$s" "$r"; then
+        echo "Error: Failed to push changes to $s."
         exit 1
     fi
-    echo "Changes pushed successfully with commit message: $1"
+    echo "Changes pushed successfully with commit message: $f"
 }
 
 
