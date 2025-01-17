@@ -22,7 +22,10 @@ changer() {
         echo "Error: Failed to stage changes."
         exit 1
     fi
-
+    echo "-----------------------------------------------------------"
+    echo "git commit -m $1"
+    echo "git push -u $2 $3"
+    echo "-----------------------------------------------------------"
     echo "Committing changes..."
     if ! git commit -m "$1"; then
         echo "Error: Failed to commit changes. Make sure there are changes to commit."
