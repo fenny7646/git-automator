@@ -15,6 +15,29 @@ if [ ! -f "$COUNTER_FILE" ]; then
     echo 0 > "$COUNTER_FILE"
 fi
 
+changer() {
+    # Run Git commands (example)
+    echo "Staging changes..."
+    if ! git add .; then
+        echo "Error: Failed to stage changes."
+        exit 1
+    fi
+
+    echo "Committing changes..."
+    if ! git commit -m "$1"; then
+        echo "Error: Failed to commit changes. Make sure there are changes to commit."
+        exit 1
+    fi
+
+    echo "Pushing changes to $2..."
+    if ! git push -u "$2" "$3"; then
+        echo "Error: Failed to push changes to $2."
+        exit 1
+    fi
+    echo "Changes pushed successfully with commit message: $1"
+}
+
+
 # Read the current counter value
 counter=$(cat "$COUNTER_FILE")
 
@@ -55,7 +78,7 @@ if [[ -z "$file_index" ]]; then
     selected_file=""  # Set file to an empty value
 else
     for key in "${!file_values[@]}"; do
-        if [[ "${file_values[$key]}" == "$file" ]]; then
+        if [[ "${file_values[$key]}" == "$file_index" ]]; then
             selected_file="$key>"
             break
         fi
@@ -83,7 +106,7 @@ if [[ -z "$repo_index" ]]; then
     selected_repo="origin"  # Set file to an empty value
 else
     for key in "${!remote_values[@]}"; do
-        if [[ "${remote_values[$key]}" == "$key" ]]; then
+        if [[ "${remote_values[$key]}" == "$repo_index" ]]; then
             selected_repo="$key"
             break
         fi
@@ -91,32 +114,19 @@ else
 fi
 
 read -p "Enter repo branch:" repo_branch
-
+echo "Carefully verify bellow actions:"
+echo "-----------------------------------------------------------"
 echo "git commit -m $formatted_message"
 echo "git push -u $selected_repo $repo_branch"
-
-# Run Git commands (example)
-echo "Staging changes..."
-if ! git add .; then
-    echo "Error: Failed to stage changes."
-    exit 1
+echo "-----------------------------------------------------------"
+read -p "Do you want to continue[Y/N]:" confirmer
+if [[ "$confirmer" == "Y" || "$confirmer" == "y" ]]; then
+    changer $formatted_message $selected_repo $repo_branch
+    # Increment the counter
+    new_counter=$((counter + 1))
+    # Save the updated counter back to the file for future use
+    echo "$new_counter" > "$COUNTER_FILE"
+else
+    break
 fi
 
-echo "Committing changes..."
-if ! git commit -m "$formatted_message"; then
-    echo "Error: Failed to commit changes. Make sure there are changes to commit."
-    exit 1
-fi
-
-echo "Pushing changes to $selected_repo..."
-if ! git push -u "$selected_repo" "$repo_branch"; then
-    echo "Error: Failed to push changes to $selected_repo."
-    exit 1
-fi
-
-echo "Changes pushed successfully with commit message: $formatted_message"
-
-# Increment the counter
-new_counter=$((counter + 1))
-# Save the updated counter back to the file for future use
-echo "$new_counter" > "$COUNTER_FILE"
