@@ -3,12 +3,11 @@
 # File to store the counter
 COUNTER_FILE=".commit_counter"
 
-# Define an array of remote repositories and their values
-declare -A remote_values=( ["sheller"]=1 )
+# Define an array of branches and their values
+declare -A branch_values=( [""]=1 )
 
 # Define an array of remote repositories and their values
 declare -A file_values=(  ["Main"]=0 ["Templates"]=1 ["Static"]=2 ["Media"]=3)
-file_repos=("" "Main" "Templates" "Static")
 
 # Check if the counter file exists; if not, initialize it with 0
 if [ ! -f "$COUNTER_FILE" ]; then
@@ -20,12 +19,12 @@ changer() {
     echo "Staging changes..."
     if ! git add .; then
         echo "Error: Failed to stage changes."
-        exit 1
+        
     fi
     echo "Committing changes..."
     if ! git commit -m "$1"; then
         echo "Error: Failed to commit changes. Make sure there are changes to commit."
-        exit 1
+
     fi
     echo "Pushing changes to $2..."
     if ! git push -u "$2" "$3"; then
@@ -92,34 +91,34 @@ formatted_message="C${counter} | ${current_date} | ${selected_file}${commit_mess
 echo "Commit message: $formatted_message"
 
 # Display available remote repositories and prompt user to select one
-echo "Available remote repositories:"
-for key in "${!remote_values[@]}"; do
-    value=${remote_values[$key]}
+echo "Available  branches:"
+for key in "${!branch_values[@]}"; do
+    value=${branch_values[$key]}
     echo "$key : $value"
 done
 
-read -p "Select a remote repository by index (default:'origin'): " repo_index
+read -p "Select a branch by index (default:'main'): " branch_index
 
-if [[ -z "$repo_index" ]]; then
-    selected_repo="origin"  # Set file to an empty value
+if [[ -z "$branch_index" ]]; then
+    selected_branch="main"  # Set file to an empty value
 else
-    for key in "${!remote_values[@]}"; do
-        if [[ "${remote_values[$key]}" == "$repo_index" ]]; then
-            selected_repo="$key"
+    for key in "${!branch_values[@]}"; do
+        if [[ "${branch_values[$key]}" == "$branch_index" ]]; then
+            selected_branch="$key"
             break
         fi
     done
 fi
 
-read -p "Enter repo branch:" repo_branch
+read -p "Enter repo remote name:" selected_repo
 echo "Carefully verify bellow actions:"
 echo "-----------------------------------------------------------"
 echo "git commit -m $formatted_message"
-echo "git push -u $selected_repo $repo_branch"
+echo "git push -u $selected_repo $selected_branch"
 echo "-----------------------------------------------------------"
 read -p "Do you want to continue[Y/N]:" confirmer
 if [[ "$confirmer" == "Y" || "$confirmer" == "y" ]]; then
-    changer "$formatted_message" "$selected_repo" "$repo_branch"
+    changer "$formatted_message" "$selected_repo" "$selected_branch"
     # Increment the counter
     new_counter=$((counter + 1))
     # Save the updated counter back to the file for future use
