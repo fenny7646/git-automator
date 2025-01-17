@@ -4,7 +4,7 @@
 COUNTER_FILE=".commit_counter"
 
 # Define an array of remote repositories and their values
-declare -A remote_values=( [ ["shell"]=1 )
+declare -A remote_values=( [ [""]=1 )
 
 # Define an array of remote repositories and their values
 declare -A file_values=(  ["Main"]=0 ["Templates"]=1 ["Static"]=2 ["Media"]=3)
@@ -87,9 +87,10 @@ else
             selected_repo="$key"
             break
         fi
-    done 
+    done
 fi
 
+read -p "Enter repo branch:" repo_branch
 
 # Run Git commands (example)
 echo "Staging changes..."
@@ -105,7 +106,7 @@ if ! git commit -m "$formatted_message"; then
 fi
 
 echo "Pushing changes to $selected_repo..."
-if ! git push -u "$selected_repo" movie; then
+if ! git push -u "$selected_repo" "$repo_branch"; then
     echo "Error: Failed to push changes to $selected_repo."
     exit 1
 fi
