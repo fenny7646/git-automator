@@ -4,7 +4,7 @@
 COUNTER_FILE=".commit_counter"
 
 # Define an array of remote repositories and their values
-declare -A remote_values=( [ [""]=1 )
+declare -A remote_values=( [ ["shell"]=1 )
 
 # Define an array of remote repositories and their values
 declare -A file_values=(  ["Main"]=0 ["Templates"]=1 ["Static"]=2 ["Media"]=3)
@@ -77,7 +77,7 @@ for key in "${!remote_values[@]}"; do
     echo "$key : $value"
 done
 
-read -p "Select a remote repository by index (default: 0 for 'origin'): " repo_index
+read -p "Select a remote repository by index (default:'origin'): " repo_index
 
 if [[ -z "$repo_index" ]]; then
     selected_repo="origin"  # Set file to an empty value
