@@ -16,10 +16,6 @@ if [ ! -f "$COUNTER_FILE" ]; then
 fi
 
 changer() {
-    local f=$1
-    local s=$2
-    local r=$3
-
     # Run Git commands (example)
     echo "Staging changes..."
     if ! git add .; then
@@ -27,17 +23,16 @@ changer() {
         exit 1
     fi
     echo "Committing changes..."
-    if ! git commit -m "$f"; then
+    if ! git commit -m "$1"; then
         echo "Error: Failed to commit changes. Make sure there are changes to commit."
         exit 1
     fi
-
-    echo "Pushing changes to $s..."
-    if ! git push -u "$s" "$r"; then
-        echo "Error: Failed to push changes to $s."
+    echo "Pushing changes to $2..."
+    if ! git push -u "$2" "$3"; then
+        echo "Error: Failed to push changes to $2."
         exit 1
     fi
-    echo "Changes pushed successfully with commit message: $f"
+    echo "Changes pushed successfully with commit message: $1"
 }
 
 
@@ -124,7 +119,7 @@ echo "git push -u $selected_repo $repo_branch"
 echo "-----------------------------------------------------------"
 read -p "Do you want to continue[Y/N]:" confirmer
 if [[ "$confirmer" == "Y" || "$confirmer" == "y" ]]; then
-    changer $formatted_message $selected_repo $repo_branch
+    changer "$formatted_message" "$selected_repo" "$repo_branch"
     # Increment the counter
     new_counter=$((counter + 1))
     # Save the updated counter back to the file for future use
