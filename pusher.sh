@@ -92,6 +92,9 @@ fi
 
 read -p "Enter repo branch:" repo_branch
 
+echo "git commit -m $formatted_message"
+echo "git push -u $selected_repo $repo_branch"
+
 # Run Git commands (example)
 echo "Staging changes..."
 if ! git add .; then
