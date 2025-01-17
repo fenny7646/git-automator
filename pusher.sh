@@ -4,8 +4,7 @@
 COUNTER_FILE=".commit_counter"
 
 # Define an array of remote repositories and their values
-declare -A remote_values=( ["origin"]="" ["moviesite"]=1 )
-remote_repos=("origin" "moviesite")
+declare -A remote_values=( [ [""]=1 )
 
 # Define an array of remote repositories and their values
 declare -A file_values=(  ["Main"]=0 ["Templates"]=1 ["Static"]=2 ["Media"]=3)
@@ -43,11 +42,11 @@ fi
 current_date=$(date +"%B %d,%-I:%M %p")
 
 # Display available Initial Text and prompt user to select one
-echo "Available remote repositories:"
+echo "Available  FIle Text for Commit:"
 
 for key in "${!file_values[@]}"; do
     value=${file_values[$key]}
-    echo "$value: $key"
+    echo "$value : $key"
 done
 
 read -p "Select initial file text by index (press enter to skip): " file_index
@@ -73,15 +72,23 @@ echo "Commit message: $formatted_message"
 
 # Display available remote repositories and prompt user to select one
 echo "Available remote repositories:"
-for i in "${!remote_repos[@]}"; do
-    echo "$i: ${remote_repos[$i]}"
+for key in "${!remote_values[@]}"; do
+    value=${remote_values[$key]}
+    echo "$key : $value"
 done
 
 read -p "Select a remote repository by index (default: 0 for 'origin'): " repo_index
 
-# Default to 'origin' if no input is provided
-repo_index=${repo_index:-0}
-selected_repo=${remote_repos[$repo_index]}
+if [[ -z "$repo_index" ]]; then
+    selected_repo="origin"  # Set file to an empty value
+else
+    for key in "${!remote_values[@]}"; do
+        if [[ "${remote_values[$key]}" == "$key" ]]; then
+            selected_repo="$key"
+            break
+        fi
+    done 
+fi
 
 
 # Run Git commands (example)
