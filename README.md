@@ -1,6 +1,6 @@
 ## Auto-Pusher for Github
 
-Installation
+### Installation
 ---
 1. Copy Script to desired folder for push.
 2. Install Git Bash.
@@ -13,4 +13,4 @@ Installation
 5. 
     ```bash
     ./pusher.sh
-    ---
+    ```
